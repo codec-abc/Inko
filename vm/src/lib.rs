@@ -14,7 +14,8 @@ extern crate num_cpus;
 extern crate num_integer;
 extern crate parking_lot;
 extern crate rayon;
-extern crate rug;
+extern crate num_traits;
+extern crate num_bigint;
 extern crate time;
 
 pub mod macros;

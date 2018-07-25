@@ -12,13 +12,14 @@
 //!
 //!     let result = bytecode_parser::parse_file("path/to/file.inkoc");
 
-use rug::Integer;
+use num_bigint::BigInt;
 use std::f64;
 use std::fs::File;
 use std::io::prelude::*;
 use std::io::Bytes;
 use std::mem;
 use std::str;
+use num_traits::Num;
 
 use catch_table::{CatchEntry, CatchTable};
 use compiled_code::CompiledCode;
@@ -347,7 +348,7 @@ fn read_literal<T: Read>(
             let slice = str::from_utf8(&bytes)
                 .map_err(|_| ParserError::InvalidBigInteger)?;
 
-            let bigint = Integer::from_str_radix(slice, 16).unwrap();
+            let bigint = BigInt::from_str_radix(slice, 16).unwrap();
 
             state.allocate_permanent_bigint(bigint)
         }

@@ -1,4 +1,4 @@
-use rug::Integer;
+use num_bigint::BigInt;
 use std::cell::UnsafeCell;
 use std::hash::{Hash, Hasher};
 use std::i64;
@@ -21,6 +21,7 @@ use object_pointer::ObjectPointer;
 use object_value;
 use process_table::PID;
 use vm::state::RcState;
+use num_traits::FromPrimitive;
 
 pub type RcProcess = Arc<Process>;
 
@@ -241,7 +242,7 @@ impl Process {
         if ObjectPointer::unsigned_integer_as_big_integer(value) {
             // The value is too large to fit in a i64, so we need to allocate it
             // as a big integer.
-            self.allocate(object_value::bigint(Integer::from(value)), prototype)
+            self.allocate(object_value::bigint(BigInt::from(value)), prototype)
         } else if ObjectPointer::unsigned_integer_too_large(value) {
             // The value is small enough that it can fit in an i64, but not
             // small enough that it can fit in a _tagged_ i64.
@@ -268,7 +269,7 @@ impl Process {
         // than `i64::MAX`.
         let pointer = if value >= i64::MAX as f64 || value <= i64::MIN as f64 {
             self.allocate(
-                object_value::bigint(Integer::from_f64(value).unwrap()),
+                object_value::bigint(BigInt::from_f64(value).unwrap()),
                 prototype,
             )
         } else {

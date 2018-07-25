@@ -1,7 +1,9 @@
 //! Virtual Machine for running instructions
+extern crate num_traits;
+
 use float_cmp::ApproxEqUlps;
 use rayon::ThreadPoolBuilder;
-use rug::Integer;
+use num_bigint::BigInt;
 use std::f64;
 use std::fs;
 use std::i32;
@@ -36,6 +38,7 @@ use stacktrace;
 use vm::file_open_mode;
 use vm::instruction::{Instruction, InstructionType};
 use vm::state::RcState;
+use num_traits::cast::ToPrimitive;
 
 macro_rules! reset_context {
     ($process:expr, $context:ident, $code:ident, $index:ident) => {{
@@ -747,7 +750,7 @@ impl Machine {
                     let integer_ptr = context.get_register(instruction.arg(1));
 
                     let result = if integer_ptr.is_bigint() {
-                        integer_ptr.bigint_value().unwrap().to_f64()
+                        integer_ptr.bigint_value().unwrap().to_f64().unwrap()
                     } else {
                         integer_ptr.integer_value()? as f64
                     };

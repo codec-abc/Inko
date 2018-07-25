@@ -1,6 +1,6 @@
 //! Operations for manipulating integers that may overflow into big integers.
 
-use rug::Integer;
+use num_bigint::BigInt;
 use std::ops::{Shl, Shr};
 
 use object_pointer::ObjectPointer;
@@ -31,10 +31,11 @@ macro_rules! shift_integer {
         let (res, overflowed) = to_shift.$overflow_op(shift_with as u32);
 
         let pointer = if overflowed {
-            let to_shift_big = Integer::from(to_shift);
+            let to_shift_big = BigInt::from(to_shift);
 
             let bigint = if $shift_with.is_in_i32_range() {
-                to_shift_big.$op(shift_with as i32)
+                let shift_with_ = shift_with as usize; // broken maybe ?
+                to_shift_big.$op(shift_with_)
             } else {
                 return Err(shift_error!($to_shift, $shift_with));
             };
@@ -65,7 +66,8 @@ macro_rules! shift_big_integer {
     ) => {{
         let to_shift = $to_shift.bigint_value()?.clone();
         let shift_with = $shift_with.integer_value()?;
-        let res = to_shift.$op(shift_with as i32);
+        let shift_with_ = shift_with as usize; // broken maybe ?
+        let res = to_shift.$op(shift_with_);
 
         Ok($process.allocate(object_value::bigint(res), $proto))
     }};

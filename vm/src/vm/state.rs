@@ -5,7 +5,7 @@
 //! etc.
 
 use parking_lot::Mutex;
-use rug::Integer;
+use num_bigint::BigInt;
 use std::sync::{Arc, RwLock};
 use std::time;
 
@@ -235,7 +235,7 @@ impl State {
         alloc.allocate_with_prototype(value, self.integer_prototype)
     }
 
-    pub fn allocate_permanent_bigint(&self, bigint: Integer) -> ObjectPointer {
+    pub fn allocate_permanent_bigint(&self, bigint: BigInt) -> ObjectPointer {
         let mut alloc = self.permanent_allocator.lock();
         let value = object_value::bigint(bigint);
 

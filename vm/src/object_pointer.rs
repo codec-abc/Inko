@@ -2,7 +2,7 @@
 // potentially result in forwarding pointers not working properly.
 #![cfg_attr(feature = "cargo-clippy", allow(trivially_copy_pass_by_ref))]
 
-use rug::Integer;
+use num_bigint::BigInt;
 use std::fs;
 use std::hash::{Hash, Hasher as HasherTrait};
 use std::i32;
@@ -22,6 +22,7 @@ use object_value::ObjectValue;
 use process::RcProcess;
 use tagged_pointer::TaggedPointer;
 use vm::state::RcState;
+use num_traits::ToPrimitive;
 
 /// Performs a write to an object and tracks it in the write barrier.
 macro_rules! write_object {
@@ -556,7 +557,7 @@ impl ObjectPointer {
 
     def_value_getter!(block_value, get, as_block, &Box<Block>);
     def_value_getter!(binding_value, get, as_binding, RcBinding);
-    def_value_getter!(bigint_value, get, as_bigint, &Integer);
+    def_value_getter!(bigint_value, get, as_bigint, &BigInt);
     def_value_getter!(hasher_value_mut, get_mut, as_hasher_mut, &mut Hasher);
 
     def_value_getter!(byte_array_value, get, as_byte_array, &Vec<u8>);
